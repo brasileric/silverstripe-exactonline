@@ -1,0 +1,25 @@
+{
+  "name": "hestec/silverstripe-exactonline",
+  "description": "ExactOnline for SilverStripe",
+  "type": "hestec-vendormodule",
+  "license": "BSD-3-Clause",
+  "keywords": ["silverstripe", "ExactOnline"],
+  "authors": [
+    {
+      "name": "Eric Hes",
+      "homepage": "http://www.hestec.nl",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://bitbucket.org/eriches/silverstripe-exactonline/issues"
+  },
+  "require": {
+    "silverstripe/framework": ">=4.0",
+    "silverstripe/cms": ">=4.0",
+    "picqer/exact-php-client": "v3.*"
+  },
+  "extra": {
+    "installer-name": "exactonline"
+  }
+}
