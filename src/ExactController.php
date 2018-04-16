@@ -15,14 +15,16 @@ class ExactController extends Controller {
 
         $code = $_GET['code'];
 
-        if (isset($code) && Member::currentUserID()){
-        //if (1 == 2){
-            $config = SiteConfig::get()->byID(1);
-            $config->ExactOauth = $code;
-            //$config->ExactOauth = "1234";
-            $config->write();
 
-            return "goed";
+        if ($_GET['code'] && Member::currentUserID()){
+
+        //if (1 == 2){
+            //$config = SiteConfig::get()->byID(1);
+            //$config->ExactOauth = $code;
+            //$config->ExactOauth = "1234";
+            //$config->write();
+
+            $this->redirect("https://www.hestec.nl?code=".$_GET['code']);
             //return $_GET['code'];
         }
 
