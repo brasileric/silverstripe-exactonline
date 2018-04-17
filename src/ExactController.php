@@ -9,8 +9,8 @@ class ExactController extends Controller {
 
     private static $allowed_actions = array (
         'Authorize',
-        'Setup',
-        'Authorized'
+        'Connect',
+        'Connected'
     );
 
     public function MySession()
@@ -20,10 +20,37 @@ class ExactController extends Controller {
 
     public function Authorize() {
 
+        //$code = $_GET['code'];
+
+
+        //if ($_GET['code'] && Member::currentUserID()){
+        if ($_GET['code']){
+
+            //$this->MySession()->set('ExactCode', $_GET['code']);
+
+        //if (1 == 2){
+            $config = SiteConfig::get()->byID(1);
+            $config->ExactOauth = $_GET['code'];
+            //$config->ExactOauth = "1234";
+            $config->write();
+
+            $this->redirect(Director::absoluteBaseURL()."ExactController/Connected");
+        }
+
+        //return SiteConfig::current_site_config()->GlobalFromEmail;
+        //return SiteConfig::current_site_config()->GlobalFromEmail();
+
+        return "fout";
+
+    }
+
+    public function xxAuthorize() {
+
         $code = $_GET['code'];
 
 
-        if ($_GET['code'] && Member::currentUserID()){
+        //if ($_GET['code'] && Member::currentUserID()){
+        if ($_GET['code']){
 
             $this->MySession()->set('ExactCode', $_GET['code']);
 
@@ -33,7 +60,7 @@ class ExactController extends Controller {
             //$config->ExactOauth = "1234";
             //$config->write();
 
-            $this->redirect(Director::absoluteBaseURL()."ExactController/Authorized");
+            $this->redirect(Director::absoluteBaseURL()."ExactController/Connected");
             //return $_GET['code'];
         }
 
@@ -44,37 +71,30 @@ class ExactController extends Controller {
 
     }
 
-    public function Authorized() {
+    public function Connected() {
 
-        if ($this->MySession()->get('ExactCode')){
+        return $_SERVER['HTTP_HOST']." has been successfully authorized by Exact Online and connected with your Exact Online account. Close this screen or tab.";
 
-            $config = SiteConfig::get()->byID(1);
-            $config->ExactOauth = $this->MySession()->get('ExactCode');
-            //$config->ExactOauth = "1234";
-            $config->write();
+    }
 
-            return "inserted";
+    public function Connect() {
+
+        $config = SiteConfig::get()->byID(1);
+
+        if (strlen($config->ExactClientId) > 20 && strlen($config->ExactClientSecret) > 10 && strlen($config->ExactWebhookSecret) > 10) {
+
+            $connection = new \Picqer\Financials\Exact\Connection();
+            $connection->setRedirectUrl(Director::absoluteBaseURL() . "ExactController/Authorize"); // Same as entered online in the App Center
+            $connection->setExactClientId($config->ExactClientId);
+            $connection->setExactClientSecret($config->ExactClientSecret);
+            $connection->redirectForAuthorization();
+
+        }else{
+
+            return "The credentials you entered are not valid or you clicked the CONNECT button without clicked the Save button first. Go back to the CMS, check and try again. Close this screen or tab.";
+
         }
 
-        //return SiteConfig::current_site_config()->GlobalFromEmail;
-        //return SiteConfig::current_site_config()->GlobalFromEmail();
-
-        return "fout";
-
     }
-
-    public function Setup() {
-
-        $connection = new \Picqer\Financials\Exact\Connection();
-        $connection->setRedirectUrl('http://www.ss-boilerplate.hst1.nl/ExactController/Authorize'); // Same as entered online in the App Center
-        $connection->setExactClientId('a9804607-e1b6-4a7b-9ec8-8c670e822510');
-        $connection->setExactClientSecret('DSG5SPofzWny');
-        $connection->redirectForAuthorization();
-
-        //return SiteConfig::current_site_config()->GlobalFromEmail;
-        //return SiteConfig::current_site_config()->GlobalFromEmail();
-
-    }
-
 
 }
