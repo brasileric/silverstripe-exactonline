@@ -6,6 +6,6 @@ name: exactonline
   #extensions:
     #- Hestec\CookieBar\CookieBar
 
-SilverStripe\SiteConfig\SiteConfig:
-  extensions:
-    - Hestec\ExactOnline\ExactOnlineSiteConfig
+#SilverStripe\SiteConfig\SiteConfig:
+#  extensions:
+#    - Hestec\ExactOnline\ExactOnlineSiteConfig

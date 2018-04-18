@@ -4,6 +4,7 @@ use SilverStripe\Control\Controller;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Member;
 use SilverStripe\Control\Director;
+use Hestec\ExactOnline\ExactOnlineConnection;
 
 class ExactController extends Controller {
 
@@ -79,14 +80,14 @@ class ExactController extends Controller {
 
     public function Connect() {
 
-        $config = SiteConfig::get()->byID(1);
+        $connectionobject = ExactOnlineConnection::get()->byID(1);
 
-        if (strlen($config->ExactClientId) > 20 && strlen($config->ExactClientSecret) > 10 && strlen($config->ExactWebhookSecret) > 10) {
+        if (strlen($connectionobject->ClientId) > 20 && strlen($connectionobject->ClientSecret) > 10 && strlen($connectionobject->WebhookSecret) > 10) {
 
             $connection = new \Picqer\Financials\Exact\Connection();
             $connection->setRedirectUrl(Director::absoluteBaseURL() . "ExactController/Authorize"); // Same as entered online in the App Center
-            $connection->setExactClientId($config->ExactClientId);
-            $connection->setExactClientSecret($config->ExactClientSecret);
+            $connection->setExactClientId($connectionobject->ClientId);
+            $connection->setExactClientSecret($connectionobject->ClientSecret);
             $connection->redirectForAuthorization();
 
         }else{
