@@ -5,10 +5,8 @@ namespace Hestec\ExactOnline;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\TextField;
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\FieldType\DBField;
-use SilverStripe\Forms\RequiredFields;
 
 class ExactOnlineConnection extends DataObject {
 
