@@ -1,6 +1,6 @@
 # SilverStripe Exact Online API connector #
 
-This module establish an API connection with Exact Online. At this moment it's for Dutch Exact Online accounts only, but in the next versions we will make it working for other countries as well.
+This module establish an API connection with Exact Online (accounting program). At this moment it's for Dutch Exact Online accounts only, but in the next versions we will make it working for other countries as well.
 
 ### Requirements ###
 
