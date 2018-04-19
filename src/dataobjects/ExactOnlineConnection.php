@@ -115,6 +115,8 @@ class ExactOnlineConnection extends DataObject {
     public function canEdit($member = null) {
         return false;
     }
-
+    public function canView($member = null) {
+        return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
+    }
 
 }
