@@ -27,7 +27,7 @@ class ExactOnlineAdmin extends ModelAdmin {
     private static $menu_title = 'ExactOnline';
 
     // menu icon
-    //private static $menu_icon = 'exactonline/images/icons/seatreservation-icon.png';
+    private static $menu_icon = 'resources/hestec/silverstripe-exactonline/client/images/icons/icon-exactonline.png';
 
     public function getEditForm($id = null, $fields = null)
     {

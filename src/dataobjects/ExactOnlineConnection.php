@@ -18,9 +18,6 @@ class ExactOnlineConnection extends DataObject {
     private static $table_name = 'ExactOnlineConnection';
 
     private static $db = array(
-        'ClientId' => 'Varchar(100)',
-        'ClientSecret' => 'Varchar(100)',
-        'WebhookSecret' => 'Varchar(100)',
         'OauthCode' => 'Text'
     );
 
@@ -29,7 +26,17 @@ class ExactOnlineConnection extends DataObject {
     );
 
     public function getConnectionTitle(){
-        return DBField::create_field('HTMLText', "Exact Online not connected yet, click here to open and connect.");
+
+        if (strlen($this->OauthCode) > 100){
+
+            return DBField::create_field('HTMLText', 'Exact Online <span style="color: green;font-weight: bold;">'._t("ExactOnlineConnection.CONNECTED", "CONNECTED").'</span>, '._t("ExactOnlineConnection.CLICK_HERE_TO_DISCONNECT", "click here to disconnect."));
+
+        }else{
+
+            return DBField::create_field('HTMLText', 'Exact Online <span style="color: red;font-weight: bold;">'._t("ExactOnlineConnection.NOT_CONNECTED", "NOT CONNECTED").'</span>, '._t("ExactOnlineConnection.CLICK_HERE_TO_CONNECT", "click here to connect."));
+
+        }
+
     }
 
         // Run on dev buld
@@ -55,39 +62,37 @@ class ExactOnlineConnection extends DataObject {
 
     public function getCMSFields() {
 
-        $infoheader = "<p><strong>Important! first read this steps to connect with Exact Online:</strong></p>";
-        $infostep_1 = "<li>Enter the credentials from the Exact Online app in the right fields en click Save.</li>";
-        $infostep_2 = "<li>When saved successfully the Connect button appears, click this button.</li>";
-        $infostep_3 = "<li>A new screen opens where you will be asked to login in your Exact Online account for authorize this website.</li>";
-        $infostep_4 = "<li>When the connection is successful a message appears and you can close that screen</li>";
-        $infostep_5 = "<li>Refresh the browser of the CMS, after that you see the right status of the connection with Exact Online on this page in the CMS.</li>";
+        $infoheader = "<p><strong>"._t("ExactOnlineConnection.INSTRUCTIONS", "Instructions").":</strong></p>";
+        $infostep_1 = "<li>"._t("ExactOnlineConnection.INFOSTEP_1", "Click the CONNECT button.")."</li>";
+        $infostep_2 = "<li>"._t("ExactOnlineConnection.INFOSTEP_2", "You will be redirected to the Exact Online login screen.")." *</li>";
+        $infostep_3 = "<li>"._t("ExactOnlineConnection.INFOSTEP_3", "Login with your Exact Online credentials.")." *</li>";
+        $infostep_4 = "<li>"._t("ExactOnlineConnection.INFOSTEP_4", "When the connection is made, you will be redirected back to the CMS.")."</li>";
+        $infostep_5 = "<li>"._t("ExactOnlineConnection.INFOSTEP_5", "The status in the CMS will display CONNECTED.")."</li>";
+        $infostep_6 = "<p>* "._t("ExactOnlineConnection.INFOSTEP_6", "note: when you are already logged in in Exact Online with the same browser, step 2 en 3 are skipped.")."</p>";
 
-        $infotext = $infoheader."<ol>".$infostep_1.$infostep_2.$infostep_3.$infostep_4.$infostep_5."</ol>";
+        $infotext = $infoheader."<ol>".$infostep_1.$infostep_2.$infostep_3.$infostep_4.$infostep_5."</ol>".$infostep_6;
 
         $IntroField = LiteralField::create('IntroField', $infotext);
-        $ClientIdField = TextField::create('ClientId', 'ClientId');
-        $ClientSecretField = TextField::create('ClientSecret', 'ClientSecret');
-        $WebhookSecretField = TextField::create('WebhookSecret', 'WebhookSecret');
-        if (strlen($this->ClientId) > 20 && strlen($this->ClientSecret) > 10 && strlen($this->WebhookSecret) > 10) {
+        //$ClientIdField = TextField::create('ClientId', 'ClientId');
+        //$ClientSecretField = TextField::create('ClientSecret', 'ClientSecret');
+        //$WebhookSecretField = TextField::create('WebhookSecret', 'WebhookSecret');
+        if (strlen($this->OauthCode) < 100) {
 
-            $ConnectButtonField = LiteralField::create('ConnectButtonField', '<a href="' . Director::absoluteBaseURL() . 'ExactController/Connect/' . $this->ID . '" class="btn btn-primary">CONNECT</a>');
+            $ConnectButtonField = LiteralField::create('ConnectButtonField', '<a href="' . Director::absoluteBaseURL() . 'ExactController/Connect/' . $this->ID . '" class="btn btn-primary font-icon-save">'._t("ExactOnlineConnection.CONNECT", "CONNECT").'</a>');
 
         }else{
 
-            $ConnectButtonField = LiteralField::create('ConnectButtonField', "The connect button will appear after you enter the credentials and click Save.");
+            $ConnectButtonField = LiteralField::create('ConnectButtonField', '<a href="' . Director::absoluteBaseURL() . 'ExactController/Disconnect/' . $this->ID . '" class="btn btn-primary font-icon-logout">'._t("ExactOnlineConnection.DISCONNECT", "DISCONNECT").'</a>');
 
         }
         return new FieldList(
             $IntroField,
-            $ClientIdField,
-            $ClientSecretField,
-            $WebhookSecretField,
             $ConnectButtonField
         );
 
     }
 
-    public function validate()
+    /*public function validate()
     {
         $result = parent::validate();
 
@@ -102,10 +107,14 @@ class ExactOnlineConnection extends DataObject {
         }
 
         return $result;
-    }
+    }*/
 
     public function canDelete($member = null) {
         return false;
     }
+    public function canEdit($member = null) {
+        return false;
+    }
+
 
 }

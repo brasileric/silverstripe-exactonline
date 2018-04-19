@@ -1,29 +1,46 @@
-# README #
+# SilverStripe Exact Online API connector #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This module establish an API connection with Exact Online. At this moment it's for Dutch Exact Online accounts only, but in the next versions we will make it working for other countries as well.
 
-### What is this repository for? ###
+### Requirements ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+SilverStripe 4
 
-### How do I get set up? ###
+### Version ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+Using Semantic Versioning.
 
-### Contribution guidelines ###
+### Installation ###
 
-* Writing tests
-* Code review
-* Other guidelines
+Install via Composer:
 
-### Who do I talk to? ###
+composer require "hestec/silverstripe-exactonline": "1.*"
 
-* Repo owner or admin
-* Other community or team contact
+### Configuration ###
+
+1. In the Exact Online app center (https://apps.exactonline.com)add an app for your API connection (instructions with screenshots shortly...)
+2. After you registered the app, you will see **ClientId**, **ClientSecret** and **WebhookSecret**.
+3. Add this 3 keys to your mysite.yml:
+```
+Hestec\ExactOnline\ExactOnlineConnection:
+  ClientId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+  ClientSecret: 'xxxxxxxxxxxx'
+  WebhookSecret: 'xxxxxxxxxxxxxxxx'
+  ```
+
+do a dev/build and flush.
+
+### Usage ###
+
+After installation and configuration go to Exact Online in the main menu of the CMS and follow the instructions to connect.
+
+![connect](https://res.cloudinary.com/hestec/image/upload/v1524144117/silverstripe-exactonline/connect.jpg)
+
+### Issues ###
+
+No known issues.
+
+### Todo ###
+
+* Add other Exact Online countries.
+* Expand the readme/instructions.

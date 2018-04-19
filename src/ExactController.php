@@ -1,98 +1,76 @@
 <?php
 
 use SilverStripe\Control\Controller;
-use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Member;
 use SilverStripe\Control\Director;
 use Hestec\ExactOnline\ExactOnlineConnection;
+use SilverStripe\Security\Permission;
 
 class ExactController extends Controller {
 
     private static $allowed_actions = array (
         'Authorize',
         'Connect',
-        'Connected'
+        'Disconnect'
     );
 
-    public function MySession()
-    {
-        return $this->getRequest()->getSession();
+    public function isCmsMember(){
+
+        if (Permission::check("CMS_ACCESS_CMSMain")){
+            return true;
+        }
+
+        return false;
+
     }
 
     public function Authorize() {
 
-        //$code = $_GET['code'];
+        if (strlen($_GET['code']) > 100 && is_numeric($this->getRequest()->param('ID')) && Member::currentUserID() && $this->isCmsMember()){
 
+            $connconfig = ExactOnlineConnection::get()->byID($this->getRequest()->param('ID'));
+            $connconfig->OauthCode = $_GET['code'];
+            $connconfig->write();
 
-        //if ($_GET['code'] && Member::currentUserID()){
-        if ($_GET['code']){
-
-            //$this->MySession()->set('ExactCode', $_GET['code']);
-
-        //if (1 == 2){
-            $config = SiteConfig::get()->byID(1);
-            $config->ExactOauth = $_GET['code'];
-            //$config->ExactOauth = "1234";
-            $config->write();
-
-            $this->redirect(Director::absoluteBaseURL()."ExactController/Connected");
+            $this->redirect(Director::absoluteBaseURL()."admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection");
         }
 
-        //return SiteConfig::current_site_config()->GlobalFromEmail;
-        //return SiteConfig::current_site_config()->GlobalFromEmail();
+        return '<p>There was an error, <a href="'.Director::absoluteBaseURL().'admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection">CLICK HERE</a> to go back and try again</p>';
+        //$this->getRequest()->getSession()->set('ConnObjectID', 2);
 
-        return "fout";
+        //return $this->getRequest()->getSession()->get('ConnObjectID');
 
     }
 
-    public function xxAuthorize() {
+    public function Disconnect() {
 
-        $code = $_GET['code'];
+        if (is_numeric($this->getRequest()->param('ID')) && Member::currentUserID() && $this->isCmsMember()){
 
+            $connconfig = ExactOnlineConnection::get()->byID($this->getRequest()->param('ID'));
+            $connconfig->OauthCode = '';
+            $connconfig->write();
 
-        //if ($_GET['code'] && Member::currentUserID()){
-        if ($_GET['code']){
+            $this->redirect(Director::absoluteBaseURL()."admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection");
 
-            $this->MySession()->set('ExactCode', $_GET['code']);
-
-        //if (1 == 2){
-            //$config = SiteConfig::get()->byID(1);
-            //$config->ExactOauth = $code;
-            //$config->ExactOauth = "1234";
-            //$config->write();
-
-            $this->redirect(Director::absoluteBaseURL()."ExactController/Connected");
-            //return $_GET['code'];
         }
-
-        //return SiteConfig::current_site_config()->GlobalFromEmail;
-        //return SiteConfig::current_site_config()->GlobalFromEmail();
-
-        return "fout";
-
-    }
-
-    public function Connected() {
-
-        return $_SERVER['HTTP_HOST']." has been successfully authorized by Exact Online and connected with your Exact Online account. Close this screen or tab.";
 
     }
 
     public function Connect() {
 
-        $connectionobject = ExactOnlineConnection::get()->byID(1);
+        $connconfig = ExactOnlineConnection::config();
 
-        if (strlen($connectionobject->ClientId) > 20 && strlen($connectionobject->ClientSecret) > 10 && strlen($connectionobject->WebhookSecret) > 10) {
+        if (strlen($connconfig->ClientId) > 20 && strlen($connconfig->ClientSecret && Member::currentUserID() && $this->isCmsMember())) {
 
             $connection = new \Picqer\Financials\Exact\Connection();
-            $connection->setRedirectUrl(Director::absoluteBaseURL() . "ExactController/Authorize"); // Same as entered online in the App Center
-            $connection->setExactClientId($connectionobject->ClientId);
-            $connection->setExactClientSecret($connectionobject->ClientSecret);
+            $connection->setRedirectUrl(Director::absoluteBaseURL() . "ExactController/Authorize/".$this->getRequest()->param('ID')); // Same as entered online in the App Center
+            $connection->setExactClientId($connconfig->ClientId);
+            $connection->setExactClientSecret($connconfig->ClientSecret);
             $connection->redirectForAuthorization();
 
         }else{
 
-            return "The credentials you entered are not valid or you clicked the CONNECT button without clicked the Save button first. Go back to the CMS, check and try again. Close this screen or tab.";
+            return '<p>There was an error, <a href="'.Director::absoluteBaseURL().'admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection">CLICK HERE</a> to go back and try again</p>';
 
         }
 
