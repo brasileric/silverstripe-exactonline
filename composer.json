@@ -1,9 +1,9 @@
 {
   "name": "hestec/silverstripe-exactonline",
-  "description": "ExactOnline for SilverStripe",
-  "type": "hestec-vendormodule",
+  "description": "Exact Online API connector for SilverStripe",
+  "type": "silverstripe-vendormodule",
   "license": "BSD-3-Clause",
-  "keywords": ["silverstripe", "ExactOnline"],
+  "keywords": ["silverstripe", "exactonline", "api"],
   "authors": [
     {
       "name": "Eric Hes",
@@ -12,7 +12,7 @@
     }
   ],
   "support": {
-    "issues": "https://bitbucket.org/eriches/silverstripe-exactonline/issues"
+    "issues": "https://github.com/brasileric/silverstripe-exactonline/issues"
   },
   "require": {
     "silverstripe/framework": ">=4.0",
