@@ -19,7 +19,8 @@ composer require "hestec/silverstripe-exactonline": "1.*"
 ### Configuration ###
 
 1. In the Exact Online app center (https://apps.exactonline.com)add an app for your API connection (instructions with screenshots shortly...)
-2. After you registered the app, you will see **ClientId**, **ClientSecret** and **WebhookSecret**.
+2. After you registered the app, you will see **ClientId**, **ClientSecret** and **WebhookSecret**.  ![exact-app](https://res.cloudinary.com/hestec/image/upload/v1524145550/silverstripe-exactonline/exact-app.jpg)
+
 3. Add this 3 keys to your mysite.yml:
 ```
 Hestec\ExactOnline\ExactOnlineConnection:
