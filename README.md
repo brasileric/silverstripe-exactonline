@@ -34,6 +34,7 @@ do a dev/build and flush.
 ### Usage ###
 
 After installation and configuration go to Exact Online in the main menu of the CMS and follow the instructions to connect.
+Or let your customer do this by themselves as accounting software is very privacy of course, then you don't need to ask for the their credentials.
 
 ![connect](https://res.cloudinary.com/hestec/image/upload/v1524144117/silverstripe-exactonline/connect.jpg)
 
