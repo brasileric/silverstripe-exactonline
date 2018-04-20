@@ -90,22 +90,13 @@ class ExactOnlineConnection extends DataObject {
 
     }
 
-    /*public function validate()
+    static function getAuthCode()
     {
-        $result = parent::validate();
 
-        if(strlen($this->ClientId) <= 20) {
-            $result->addError(_t('ExactOnlineConnection.VALIDATE_CLIENTID', "ClientId is too short."));
-        }
-        if(strlen($this->ClientSecret) <= 10) {
-            $result->addError(_t('ExactOnlineConnection.VALIDATE_CLIENTID', "ClientSecret is too short."));
-        }
-        if(strlen($this->WebhookSecret) <= 10) {
-            $result->addError(_t('ExactOnlineConnection.VALIDATE_CLIENTID', "WebhookSecret is too short."));
-        }
+        $output = ExactOnlineConnection::get()->first();
+        return $output->OauthCode;
 
-        return $result;
-    }*/
+    }
 
     public function canDelete($member = null) {
         return false;
