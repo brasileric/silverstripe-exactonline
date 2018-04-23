@@ -18,7 +18,8 @@ class ExactOnlineConnection extends DataObject {
     private static $db = array(
         'OauthCode' => 'Text',
         'AccessToken' => 'Text',
-        'RefreshToken' => 'Text'
+        'RefreshToken' => 'Text',
+        'TokenExpires' => 'Varchar(20)'
     );
 
     private static $summary_fields = array(
@@ -27,7 +28,7 @@ class ExactOnlineConnection extends DataObject {
 
     public function getConnectionTitle(){
 
-        if (strlen($this->OauthCode) > 100){
+        if (strlen($this->AccessToken) > 100 && strlen($this->RefreshToken) > 100){
 
             return DBField::create_field('HTMLText', 'Exact Online <span style="color: green;font-weight: bold;">'._t("ExactOnlineConnection.CONNECTED", "CONNECTED").'</span>, '._t("ExactOnlineConnection.CLICK_HERE_TO_DISCONNECT", "click here to disconnect."));
 
@@ -76,13 +77,13 @@ class ExactOnlineConnection extends DataObject {
         //$ClientIdField = TextField::create('ClientId', 'ClientId');
         //$ClientSecretField = TextField::create('ClientSecret', 'ClientSecret');
         //$WebhookSecretField = TextField::create('WebhookSecret', 'WebhookSecret');
-        if (strlen($this->OauthCode) < 100) {
+        if (strlen($this->AccessToken) < 100 || strlen($this->RefreshToken) < 100) {
 
-            $ConnectButtonField = LiteralField::create('ConnectButtonField', '<a href="' . Director::absoluteBaseURL() . 'ExactController/Connect/' . $this->ID . '" class="btn btn-primary font-icon-save">'._t("ExactOnlineConnection.CONNECT", "CONNECT").'</a>');
+            $ConnectButtonField = LiteralField::create('ConnectButtonField', '<a href="' . Director::absoluteBaseURL() . 'ExactController/Connect" class="btn btn-primary font-icon-save">'._t("ExactOnlineConnection.CONNECT", "CONNECT").'</a>');
 
         }else{
 
-            $ConnectButtonField = LiteralField::create('ConnectButtonField', '<a href="' . Director::absoluteBaseURL() . 'ExactController/Disconnect/' . $this->ID . '" class="btn btn-primary font-icon-logout">'._t("ExactOnlineConnection.DISCONNECT", "DISCONNECT").'</a>');
+            $ConnectButtonField = LiteralField::create('ConnectButtonField', '<a href="' . Director::absoluteBaseURL() . 'ExactController/Disconnect" class="btn btn-primary font-icon-logout">'._t("ExactOnlineConnection.DISCONNECT", "DISCONNECT").'</a>');
 
         }
         return new FieldList(
