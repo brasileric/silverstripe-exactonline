@@ -28,7 +28,7 @@ class ExactController extends Controller {
 
     public function Authorize() {
 
-        /*if (strlen($_GET['code']) > 100 && Member::currentUserID() && $this->isCmsMember()){
+        if (strlen($_GET['code']) > 100 && Member::currentUserID() && $this->isCmsMember()){
 
             $connconfig = ExactOnlineConnection::config();
             $connobject = ExactOnlineConnection::get()->first();
@@ -54,7 +54,7 @@ class ExactController extends Controller {
 
             $this->redirect(Director::absoluteBaseURL() . "admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection");
 
-        }*/
+        }
 
         return '<p>There was an error (1001), <a href="'.Director::absoluteBaseURL().'admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection">CLICK HERE</a> to go back and try again</p>';
         //$this->getRequest()->getSession()->set('ConnObjectID', 2);
