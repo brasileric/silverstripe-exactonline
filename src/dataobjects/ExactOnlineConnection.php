@@ -16,7 +16,9 @@ class ExactOnlineConnection extends DataObject {
     private static $table_name = 'ExactOnlineConnection';
 
     private static $db = array(
-        'OauthCode' => 'Text'
+        'OauthCode' => 'Text',
+        'AccessToken' => 'Text',
+        'RefreshToken' => 'Text'
     );
 
     private static $summary_fields = array(
