@@ -30,19 +30,19 @@ class ExactController extends Controller {
 
         $connconfig = ExactOnlineConnection::config();
 
-        /*if (strlen($_GET['code']) > 100 && is_numeric($this->getRequest()->param('ID')) && Member::currentUserID() && $this->isCmsMember()){
+        if (strlen($_GET['code']) > 100 && is_numeric($this->getRequest()->param('ID')) && Member::currentUserID() && $this->isCmsMember()){
 
             $connconfig = ExactOnlineConnection::get()->byID($this->getRequest()->param('ID'));
             $connconfig->OauthCode = $_GET['code'];
             $connconfig->write();
 
-            //$this->redirect(Director::absoluteBaseURL() . "ExactController/Authorize2/".$this->getRequest()->param('ID'));
+            $this->redirect(Director::absoluteBaseURL() . "ExactController/Authorize2/".$this->getRequest()->param('ID'));
         }
 
         return '<p>There was an error, <a href="'.Director::absoluteBaseURL().'admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection">CLICK HERE</a> to go back and try again</p>';
         //$this->getRequest()->getSession()->set('ConnObjectID', 2);
 
-        //return $this->getRequest()->getSession()->get('ConnObjectID');*/
+        //return $this->getRequest()->getSession()->get('ConnObjectID');
 
     }
 
@@ -59,8 +59,8 @@ class ExactController extends Controller {
             $connection->setExactClientId($connconfig->ClientId);
             $connection->setExactClientSecret($connconfig->ClientSecret);
 
-            $connection->setAuthorizationCode("5F33%21IAAAABQ1EUQwJ72GLjmoOw_Aaidrh6IbFkIe9mZbFoJ4ZAyG8QAAAAHeIwwubzC0WMc__bzHEI5jrjRp5942k03CZJuaeX9M2fKFvQP51b24UQ4ha5-zqgSAZMBbCL8JBsUbn7bQ3C-yrQdbtfxEBMmdMFpzPQX_ifuZs8vD-Qo3wrXaB0R41VlUhhW6idgWS4EiXvHIJN70dNBqf1eFzI4-3zB6rrFxJDBJNBFuguL8umMYhVYBBs57n_mm-mjT2dh48sdSs9h5EQwmDv1PUfcrEDl0twzEY7MsJizKDCoRdszZH4lfgUed6TSlshhT3O7XFZQ4Amu3pJMR7iFBdDCGqQekvivCBcFoMB_fR2M7vMMVXuJpTJI");
-            //$connection->setAuthorizationCode("");
+            //$connection->setAuthorizationCode("5F33%21IAAAABQ1EUQwJ72GLjmoOw_Aaidrh6IbFkIe9mZbFoJ4ZAyG8QAAAAHeIwwubzC0WMc__bzHEI5jrjRp5942k03CZJuaeX9M2fKFvQP51b24UQ4ha5-zqgSAZMBbCL8JBsUbn7bQ3C-yrQdbtfxEBMmdMFpzPQX_ifuZs8vD-Qo3wrXaB0R41VlUhhW6idgWS4EiXvHIJN70dNBqf1eFzI4-3zB6rrFxJDBJNBFuguL8umMYhVYBBs57n_mm-mjT2dh48sdSs9h5EQwmDv1PUfcrEDl0twzEY7MsJizKDCoRdszZH4lfgUed6TSlshhT3O7XFZQ4Amu3pJMR7iFBdDCGqQekvivCBcFoMB_fR2M7vMMVXuJpTJI");
+            $connection->setAuthorizationCode($connobject->OauthCode);
 
             try {
                 $connection->connect();
@@ -70,9 +70,9 @@ class ExactController extends Controller {
             }
 
             //return $connconfig->OauthCode;
-            //$connconfig->AccessToken = serialize($connection->getAccessToken());
-            //$connconfig->RefreshToken = $connection->getRefreshToken();
-            //$connconfig->write();
+        $connobject->AccessToken = serialize($connection->getAccessToken());
+        $connobject->RefreshToken = $connection->getRefreshToken();
+        $connobject->write();
 
             //$this->redirect(Director::absoluteBaseURL()."admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection");
         //}
