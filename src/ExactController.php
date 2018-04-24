@@ -5,6 +5,7 @@ use SilverStripe\Security\Member;
 use SilverStripe\Control\Director;
 use Hestec\ExactOnline\ExactOnlineConnection;
 use SilverStripe\Security\Permission;
+use Hestec\ExactOnline\ExactRequest;
 
 class ExactController extends Controller {
 
@@ -13,7 +14,8 @@ class ExactController extends Controller {
         'Authorize2',
         'Authorize3',
         'Connect',
-        'Disconnect'
+        'Disconnect',
+        'Test'
     );
 
     public function isCmsMember(){
@@ -57,9 +59,6 @@ class ExactController extends Controller {
         }
 
         return '<p>There was an error (1001), <a href="'.Director::absoluteBaseURL().'admin/exactonline/Hestec-ExactOnline-ExactOnlineConnection">CLICK HERE</a> to go back and try again</p>';
-        //$this->getRequest()->getSession()->set('ConnObjectID', 2);
-
-        //return $this->getRequest()->getSession()->get('ConnObjectID');
 
     }
 
@@ -99,40 +98,41 @@ class ExactController extends Controller {
 
     }
 
-    public function Authorize2() {
+    public function Test(){
 
-        $output = ExactOnlineConnection::get()->first();
-
-        if ($output->TokenExpires > time()){
-            return "token is nog niet verlopen";
-        }
-
-        return "token is verlopen";
-
-    }
-
-    public function Authorize3() {
-
-        $connconfig = ExactOnlineConnection::config();
         $connobject = ExactOnlineConnection::get()->first();
 
-        $connection = new \Picqer\Financials\Exact\Connection();
-        //$connection->setRedirectUrl(Director::absoluteBaseURL() . "ExactController/Authorize");
-        $connection->setExactClientId($connconfig->ClientId);
-        $connection->setExactClientSecret($connconfig->ClientSecret);
+        //$connection = ExactRequest::ConnectInit();
+        $connection = new ExactRequest();
+        $conn = $connection->ConnectApi();
 
-        $connection->setAccessToken(unserialize($connobject->AccessToken));
-        $connection->setRefreshToken($connobject->RefreshToken);
+        //$conn->setAccessToken(unserialize($connobject->AccessToken));
+        //$conn->setRefreshToken($connobject->RefreshToken);
 
-        try {
-            $connection->connect();
-        } catch (\Exception $e)
-        {
-            throw new Exception('Could not connect to Exact: ' . $e->getMessage());
-        }
+        /*$account = new \Picqer\Financials\Exact\Account($conn);
+        $account->AddressLine1 = "Breed 34";
+        $account->AddressLine2 = '';
+        $account->City = "HOORN";
+        $account->Code = 1234;
+        $account->Country = "NL";
+        $account->IsSales = 'true';
+        $account->Name = "Piet Puk";
+        $account->Postcode = "1621KC";
+        $account->Status = 'C';
+        $account->save();*/
+
+        // Add a product in Exact
+        $item = new \Picqer\Financials\Exact\Item($conn);
+        $item->Code = 124;
+        $item->CostPriceStandard = 9;
+        $item->Description = "Hondenvoer";
+        $item->IsSalesItem = true;
+        //$item->SalesVatCode = '0';
+        $item->save();
 
         return "CONNECTED";
 
     }
+
 
 }

@@ -2,40 +2,63 @@
 
 namespace Hestec\ExactOnline;
 
+use SilverStripe\Control\Director;
+
 class ExactRequest
 {
 
-    public function Connect()
-    {
-        /*$apikey = Config::inst()->get('GetResponse', 'apikey');
+    public function ConnectApi(){
 
-        $service = new RestfulService("https://api.getresponse.com", 0);
-        $service->httpHeader("Content-Type: application/json");
-        $service->httpHeader("X-Auth-Token: api-key " . $apikey);
-
-        return $service;*/
-
-
-        $connconfig = ExactOnlineConnection::config();
         $connobject = ExactOnlineConnection::get()->first();
 
-        $connection = new \Picqer\Financials\Exact\Connection();
-        $connection->setExactClientId($connconfig->ClientId);
-        $connection->setExactClientSecret($connconfig->ClientSecret);
+        if (strlen($connobject->AccessToken) > 100 && strlen($connobject->RefreshToken) > 100 && $connobject->TokenExpires){
 
-        $connection->setAccessToken(unserialize($connobject->AccessToken));
-        $connection->setRefreshToken($connobject->RefreshToken);
+            $connection = $this->ConnectInit();
 
-        try {
-            $connection->connect();
-        } catch (\Exception $e)
-        {
-            throw new Exception('Could not connect to Exact: ' . $e->getMessage());
+            $connection->setAccessToken(unserialize($connobject->AccessToken));
+            $connection->setRefreshToken($connobject->RefreshToken);
+
+            try {
+                $connection->connect();
+            } catch (\Exception $e)
+            {
+                throw new Exception('Could not connect to Exact: ' . $e->getMessage());
+            }
+
+            // get and save new tokens when tokens are expired
+            if ($connobject->TokenExpires < time()){
+
+                $connobject->AccessToken = serialize($connection->getAccessToken());
+                $connobject->RefreshToken = $connection->getRefreshToken();
+                $connobject->TokenExpires = $connection->getTokenExpires();
+                $connobject->write();
+
+            }
+
+            return $connection;
+
         }
 
-        //return "CONNECTED";
+        return "No tokens";
 
-        return $connection;
+    }
+
+    public function ConnectInit(){
+
+        $connconfig = ExactOnlineConnection::config();
+
+        if (strlen($connconfig->ClientId) > 20 && strlen($connconfig->ClientSecret)) {
+
+            $connection = new \Picqer\Financials\Exact\Connection();
+            $connection->setRedirectUrl(Director::absoluteBaseURL() . "ExactController/Authorize"); // Same as entered online in the App Center
+            $connection->setExactClientId($connconfig->ClientId);
+            $connection->setExactClientSecret($connconfig->ClientSecret);
+
+            return $connection;
+
+        }
+
+        return "No yml config";
 
     }
 
