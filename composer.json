@@ -17,7 +17,7 @@
   "require": {
     "silverstripe/framework": ">=4.0",
     "silverstripe/cms": ">=4.0",
-    "picqer/exact-php-client": "v3.*"
+    "picqer/exact-php-client": "dev-master"
   },
   "extra": {
     "expose": [
